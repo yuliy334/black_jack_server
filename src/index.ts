@@ -6,15 +6,14 @@ const PORT = 9000;
 
 
 
-const gameState: { gameCards: string[]; playerCards: string[]; playerPoints: number; dilerCards: string[], dilerPoints: number; isWin: boolean; isLoose: boolean, isPush: boolean } = {
+const gameState: { gameCards: string[]; playerCards: string[]; playerPoints: number; dilerCards: string[], dilerPoints: number; gameResult: string } = {
     gameCards: [],
     playerCards: [],
     playerPoints: 0,
     dilerCards: [],
     dilerPoints: 0,
-    isWin: false,
-    isLoose: false,
-    isPush: false
+    gameResult: ""
+
 };
 
 app.get('/games', (req: Request, res: Response) => {
@@ -28,9 +27,7 @@ app.get('/games', (req: Request, res: Response) => {
         playerCards: gameState.playerCards,
         playerPoints: gameState.playerPoints,
 
-        isWin: gameState.isWin,
-        isLoose: gameState.isLoose,
-        isPush: gameState.isPush
+        gameResult: gameState.gameResult
 
     });
 });
@@ -45,9 +42,7 @@ app.get('/games/hit', (req: Request, res: Response) => {
         playerCards: gameState.playerCards,
         playerPoints: gameState.playerPoints,
 
-        isWin: gameState.isWin,
-        isLoose: gameState.isLoose,
-        isPush: gameState.isPush
+        gameResult: gameState.gameResult
     });
 });
 app.get('/games/stand', (req: Request, res: Response) => {
@@ -62,9 +57,7 @@ app.get('/games/stand', (req: Request, res: Response) => {
         playerCards: gameState.playerCards,
         playerPoints: gameState.playerPoints,
 
-        isWin: gameState.isWin,
-        isLoose: gameState.isLoose,
-        isPush: gameState.isPush
+        gameResult: gameState.gameResult
     });
 });
 
@@ -94,9 +87,7 @@ function newGame() {
     gameState.playerCards = [];
     gameState.playerPoints = 0;
     gameState.dilerPoints = 0;
-    gameState.isWin = false;
-    gameState.isLoose = false;
-    gameState.isPush = false;
+    gameState.gameResult = "";
     addCard();
     addCard();
     dilerAddCard();
@@ -156,29 +147,30 @@ function dilerAddCard() {
         }
     }
 }
-function Check(){
+function Check() {
     if (gameState.playerPoints > 22) {
-        gameState.isLoose = true;
+        gameState.gameResult = "loose";
     }
 }
 function CheckAfterStand() {
     if (gameState.playerPoints < 22) {
         if (gameState.dilerPoints > 21) {
-            gameState.isWin = true;
+            gameState.gameResult = "win";
         }
         else {
             if (gameState.playerPoints > gameState.dilerPoints) {
-                gameState.isWin = true;
+                gameState.gameResult = "win";
             }
             else if (gameState.playerPoints < gameState.dilerPoints) {
-                gameState.isLoose = true;
+                gameState.gameResult = "loose";
+
             }
             else {
-                gameState.isPush = true;
+                gameState.gameResult = "push";
             }
         }
     }
     else {
-        gameState.isLoose = true;
+        gameState.gameResult = "loose";
     }
 }
