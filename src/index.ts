@@ -14,10 +14,8 @@ const gameState: { gameCards: string[]; playerCards: string[]; dilerCards: strin
 
 app.get('/games', (_req: Request, res: Response) => {
     createGameCards();
-    addCard();
-    addCard();
-    dilerAddCard();
-    dilerAddCard();
+    newGame();
+    checkCards();
     res.send({
         gameCards: gameState.gameCards,
         playerCards: gameState.playerCards,
@@ -55,6 +53,15 @@ function createGameCards() {
     gameState.gameCards = cards;
 }
 
+function newGame(){
+    gameState.dilerCards = [];
+    gameState.playerCards = [];
+    addCard();
+    addCard();
+    dilerAddCard();
+    dilerAddCard();
+}
+
 function addCard() {
     let newCard: string = gameState.gameCards[Math.floor(Math.random() * (gameState.gameCards.length))];
     gameState.playerCards.push(newCard);
@@ -64,4 +71,7 @@ function dilerAddCard() {
     let newCard: string = gameState.gameCards[Math.floor(Math.random() * (gameState.gameCards.length))];
     gameState.dilerCards.push(newCard);
     gameState.gameCards = gameState.gameCards.filter((card) => card != newCard);
+}
+function checkCards() {
+
 }
