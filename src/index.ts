@@ -16,9 +16,12 @@ app.get('/games', (_req: Request, res: Response) => {
     createGameCards();
     addCard();
     addCard();
+    dilerAddCard();
+    dilerAddCard();
     res.send({
         gameCards: gameState.gameCards,
-        playerCards: gameState.playerCards
+        playerCards: gameState.playerCards,
+        dilerCards: gameState.dilerCards
     });
 });
 app.get('/games/hit', (_req: Request, res: Response) => {
@@ -51,8 +54,14 @@ function createGameCards() {
 
     gameState.gameCards = cards;
 }
+
 function addCard() {
     let newCard: string = gameState.gameCards[Math.floor(Math.random() * (gameState.gameCards.length))];
     gameState.playerCards.push(newCard);
+    gameState.gameCards = gameState.gameCards.filter((card) => card != newCard);
+}
+function dilerAddCard() {
+    let newCard: string = gameState.gameCards[Math.floor(Math.random() * (gameState.gameCards.length))];
+    gameState.dilerCards.push(newCard);
     gameState.gameCards = gameState.gameCards.filter((card) => card != newCard);
 }
