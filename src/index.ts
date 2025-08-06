@@ -1,16 +1,10 @@
 import express, { Request, Response } from 'express';
+import { GameState, CardValue } from './types/types';
 
 const app = express();
 const PORT = 9000;
 
-interface GameState {
-  gameCards: string[];
-  playerCards: string[];
-  playerPoints: number;
-  dilerCards: string[];
-  dilerPoints: number;
-  gameResult: string;
-}
+
 
 const gameState: GameState = {
   gameCards: [],
