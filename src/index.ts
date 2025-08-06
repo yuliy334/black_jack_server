@@ -3,18 +3,24 @@ import express, { Request, Response } from 'express';
 const app = express();
 const PORT = 9000;
 
+interface GameState {
+  gameCards: string[];
+  playerCards: string[];
+  playerPoints: number;
+  dilerCards: string[];
+  dilerPoints: number;
+  gameResult: string;
+}
 
-
-
-const gameState: { gameCards: string[]; playerCards: string[]; playerPoints: number; dilerCards: string[], dilerPoints: number; gameResult: string } = {
-    gameCards: [],
-    playerCards: [],
-    playerPoints: 0,
-    dilerCards: [],
-    dilerPoints: 0,
-    gameResult: ""
-
+const gameState: GameState = {
+  gameCards: [],
+  playerCards: [],
+  playerPoints: 0,
+  dilerCards: [],
+  dilerPoints: 0,
+  gameResult: ""
 };
+
 
 app.get('/games', (req: Request, res: Response) => {
     createGameCards();
