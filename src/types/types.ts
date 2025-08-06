@@ -1,5 +1,5 @@
-enum CardValue{
-    
+enum CardValue {
+
     two = 2,
     three,
     four,
@@ -15,13 +15,25 @@ enum CardValue{
     ace = 11
 }
 
-interface GameState {
-  gameCards: string[];
-  playerCards: string[];
-  playerPoints: number;
-  dilerCards: string[];
-  dilerPoints: number;
-  gameResult: string;
+enum Suit {
+    '♠',
+    '♥',
+    '♦',
+    '♣'
 }
 
-export {GameState,CardValue};
+interface Card {
+    rank: CardValue,
+    suit: Suit
+}
+
+interface GameState {
+    gameCards: Card[];
+    playerCards: Card[];
+    playerPoints: number;
+    dilerCards: Card[];
+    dilerPoints: number;
+    gameResult: string;
+}
+
+export { GameState, CardValue,Suit,Card };

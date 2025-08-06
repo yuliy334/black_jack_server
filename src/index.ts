@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { GameState, CardValue } from './types/types';
+import { GameState, CardValue,Suit,Card } from './types/types';
 
 const app = express();
 const PORT = 9000;
@@ -69,13 +69,14 @@ app.listen(PORT, () => {
 
 
 function createGameCards() {
-    const suits = ['♠', '♥', '♦', '♣'];
-    const ranks = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
-    const cards: string[] = [];
+    const suits = Object.values(Suit) as Suit[];
+    console.log(suits);
+    const ranks = Object.values(CardValue) as CardValue[];
+    const cards: Card[] = [];
 
     for (const suit of suits) {
         for (const rank of ranks) {
-            cards.push(`${rank}${suit}`);
+            cards.push({rank, suit});
         }
     }
 
