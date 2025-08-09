@@ -132,7 +132,7 @@ function countCards(someoneCards: Card[], someonePoints:{value: number}) {
 }
 
 function Check() {
-    if (gameState.playerPoints.value > 22) {
+    if (gameState.playerPoints.value > 21) {
         gameState.gameResult = "loose";
     }
     else if (gameState.playerPoints.value == 21) {
