@@ -20,7 +20,6 @@ app.get('/games', (req: Request, res: Response) => {
     createGameCards();
     newGame();
     Check();
-    firstCheck();
     res.send({
         dilerCards: gameState.dilerCards,
         dilerPoints: gameState.dilerPoints,
@@ -102,21 +101,33 @@ function addCard(someoneCards: Card[], someonePoints: { value: number }) {
     let newCard: Card = gameState.gameCards[Math.floor(Math.random() * (gameState.gameCards.length))]
     someoneCards.push(newCard);
     gameState.gameCards = gameState.gameCards.filter((card) => card != newCard);
-    if (newCard.rank == CardValue.ace) {
-        if (someonePoints.value <= 10) {
-            someonePoints.value += Number(newCard.rank);
-        }
-        else {
-            someonePoints.value += 1;
-        }
-
-    }
-    else {
-        someonePoints.value += Number(newCard.rank);
-    }
-    console.log(someonePoints.value);
+    countCards(someoneCards,someonePoints);
 
 }
+
+function countCards(someoneCards: Card[], someonePoints:{value: number}) {
+
+    let aceCount: number = 0;
+    let points: number = 0;
+    for (const card of someoneCards) {
+        if (card.rank == CardValue.ace) {
+            aceCount++;
+            points += CardValue.ace;
+        }
+        else {
+            points += card.rank;
+
+        }
+    }
+    if (points > 21 && aceCount != 0) {
+        while (points > 21 && aceCount > 0) {
+            points -= 10;
+            aceCount--;
+        }
+    }
+    someonePoints.value = points;
+}
+
 function Check() {
     if (gameState.playerPoints.value > 22) {
         gameState.gameResult = "loose";
@@ -130,17 +141,6 @@ function Check() {
         }
     }
 
-}
-function firstCheck() {
-    if (gameState.dilerPoints.value == 21) {
-        if (gameState.playerPoints.value == 21) {
-            gameState.gameResult = "push";
-        }
-        else {
-            gameState.gameResult = "loose";
-        }
-
-    }
 }
 function CheckAfterStand() {
     if (gameState.playerPoints.value < 22) {
