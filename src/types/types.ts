@@ -9,10 +9,10 @@ enum CardValue {
     eight,
     nine,
     ten,
-    jack = 10,
-    quin = 10,
-    king = 10,
-    ace = 11
+    jack,
+    quin,
+    king,
+    ace
 }
 
 enum Suit {
