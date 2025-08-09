@@ -112,7 +112,7 @@ function countCards(someoneCards: Card[], someonePoints:{value: number}) {
     for (const card of someoneCards) {
         if (card.rank == CardValue.ace) {
             aceCount++;
-            points += CardValue.ace;
+            points += 11;
         }
         else if(card.rank == CardValue.jack || card.rank == CardValue.quin || card.rank == CardValue.king){
             points+=10;
