@@ -30,9 +30,9 @@ interface Card {
 interface GameState {
     gameCards: Card[];
     playerCards: Card[];
-    playerPoints: number;
+    playerPoints: {value: number};
     dilerCards: Card[];
-    dilerPoints: number;
+    dilerPoints: {value: number};
     gameResult: string;
 }
 
