@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { GameState, CardValue,Suit,Card } from './types/types';
+import { GameState, CardValue, Suit, Card } from './types/types';
 
 const app = express();
 const PORT = 9000;
@@ -7,12 +7,12 @@ const PORT = 9000;
 
 
 const gameState: GameState = {
-  gameCards: [],
-  playerCards: [],
-  playerPoints: 0,
-  dilerCards: [],
-  dilerPoints: 0,
-  gameResult: ""
+    gameCards: [],
+    playerCards: [],
+    playerPoints: { value: 0 },
+    dilerCards: [],
+    dilerPoints: { value: 0 },
+    gameResult: ""
 };
 
 
@@ -20,6 +20,7 @@ app.get('/games', (req: Request, res: Response) => {
     createGameCards();
     newGame();
     Check();
+    firstCheck();
     res.send({
         dilerCards: gameState.dilerCards,
         dilerPoints: gameState.dilerPoints,
@@ -33,7 +34,7 @@ app.get('/games', (req: Request, res: Response) => {
 });
 app.get('/games/hit', (req: Request, res: Response) => {
 
-    addCard();
+    addCard(gameState.playerCards, gameState.playerPoints);
     Check();
     res.send({
         dilerCards: gameState.dilerCards,
@@ -46,16 +47,16 @@ app.get('/games/hit', (req: Request, res: Response) => {
     });
 });
 app.get('/games/stand', (req: Request, res: Response) => {
-    while (gameState.dilerPoints < 17) {
-        dilerAddCard();
+    while (gameState.dilerPoints.value < 17) {
+        addCard(gameState.dilerCards, gameState.dilerPoints);
     }
     CheckAfterStand();
     res.send({
         dilerCards: gameState.dilerCards,
-        dilerPoints: gameState.dilerPoints,
+        dilerPoints: gameState.dilerPoints.value,
 
         playerCards: gameState.playerCards,
-        playerPoints: gameState.playerPoints,
+        playerPoints: gameState.playerPoints.value,
 
         gameResult: gameState.gameResult
     });
@@ -69,14 +70,15 @@ app.listen(PORT, () => {
 
 
 function createGameCards() {
-    const suits = Object.values(Suit) as Suit[];
-    console.log(suits);
-    const ranks = Object.values(CardValue) as CardValue[];
+    const suits = Object.values(Suit).filter((s) => typeof (s) === "number") as Suit[];
+    console.log(suits.values);
+    const ranks = Object.values(CardValue).filter((r) => typeof (r) === "number") as CardValue[];
+
     const cards: Card[] = [];
 
     for (const suit of suits) {
         for (const rank of ranks) {
-            cards.push({rank, suit});
+            cards.push({ rank, suit });
         }
     }
 
@@ -86,83 +88,70 @@ function createGameCards() {
 function newGame() {
     gameState.dilerCards = [];
     gameState.playerCards = [];
-    gameState.playerPoints = 0;
-    gameState.dilerPoints = 0;
+    gameState.playerPoints = { value: 0 };
+    gameState.dilerPoints = { value: 0 };
     gameState.gameResult = "";
-    addCard();
-    addCard();
-    dilerAddCard();
-    dilerAddCard();
+    addCard(gameState.playerCards, gameState.playerPoints);
+    addCard(gameState.playerCards, gameState.playerPoints);
+    addCard(gameState.dilerCards, gameState.dilerPoints);
+    addCard(gameState.dilerCards, gameState.dilerPoints);
 }
 
-function addCard() {
-    let newCard: string = gameState.gameCards[Math.floor(Math.random() * (gameState.gameCards.length))];
-    gameState.playerCards.push(newCard);
+function addCard(someoneCards: Card[], someonePoints: { value: number }) {
+    console.log(`before ${someonePoints.value}`);
+    let newCard: Card = gameState.gameCards[Math.floor(Math.random() * (gameState.gameCards.length))]
+    someoneCards.push(newCard);
     gameState.gameCards = gameState.gameCards.filter((card) => card != newCard);
-
-    let newCardValue: string = newCard.slice(0, -1);
-    let newCardNumValue: number = Number(newCardValue);
-
-    if (!isNaN(newCardNumValue)) {
-        gameState.playerPoints += newCardNumValue;
-    }
-    else {
-        if (newCardValue == "A") {
-            if (gameState.playerPoints <= 10) {
-                gameState.playerPoints += 11;
-            }
-            else {
-                gameState.playerPoints += 1;
-            }
-
+    if (newCard.rank == CardValue.ace) {
+        if (someonePoints.value <= 10) {
+            someonePoints.value += Number(newCard.rank);
         }
         else {
-            gameState.playerPoints += 10;
+            someonePoints.value += 1;
         }
-    }
 
-}
-function dilerAddCard() {
-    let newCard: string = gameState.gameCards[Math.floor(Math.random() * (gameState.gameCards.length))];
-    gameState.dilerCards.push(newCard);
-    gameState.gameCards = gameState.gameCards.filter((card) => card != newCard);
-
-    let newCardValue: string = newCard.slice(0, -1);
-    let newCardNumValue: number = Number(newCardValue);
-
-    if (!isNaN(newCardNumValue)) {
-        gameState.dilerPoints += newCardNumValue;
     }
     else {
-        if (newCardValue == "A") {
-            if (gameState.dilerPoints <= 10) {
-                gameState.dilerPoints += 11;
-            }
-            else {
-                gameState.dilerPoints += 1;
-            }
-
-        }
-        else {
-            gameState.dilerPoints += 10;
-        }
+        someonePoints.value += Number(newCard.rank);
     }
+    console.log(someonePoints.value);
+
 }
 function Check() {
-    if (gameState.playerPoints > 22) {
+    if (gameState.playerPoints.value > 22) {
         gameState.gameResult = "loose";
+    }
+    else if (gameState.playerPoints.value == 21) {
+        if (gameState.dilerPoints.value == 21) {
+            gameState.gameResult = "push";
+        }
+        else {
+            gameState.gameResult = "win";
+        }
+    }
+
+}
+function firstCheck() {
+    if (gameState.dilerPoints.value == 21) {
+        if (gameState.playerPoints.value == 21) {
+            gameState.gameResult = "push";
+        }
+        else {
+            gameState.gameResult = "loose";
+        }
+
     }
 }
 function CheckAfterStand() {
-    if (gameState.playerPoints < 22) {
-        if (gameState.dilerPoints > 21) {
+    if (gameState.playerPoints.value < 22) {
+        if (gameState.dilerPoints.value > 21) {
             gameState.gameResult = "win";
         }
         else {
-            if (gameState.playerPoints > gameState.dilerPoints) {
+            if (gameState.playerPoints.value > gameState.dilerPoints.value) {
                 gameState.gameResult = "win";
             }
-            else if (gameState.playerPoints < gameState.dilerPoints) {
+            else if (gameState.playerPoints.value < gameState.dilerPoints.value) {
                 gameState.gameResult = "loose";
 
             }
