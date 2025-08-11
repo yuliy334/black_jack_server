@@ -1,9 +1,13 @@
 import express, { Request, Response } from 'express';
 import { GameState, CardValue, Suit, Card } from './types/types';
+import cors from 'cors';
 
 const app = express();
 const PORT = 9000;
 
+app.use(cors({
+  origin: 'http://localhost:5173'  
+}));
 
 
 const gameState: GameState = {
