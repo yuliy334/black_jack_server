@@ -56,10 +56,10 @@ app.get('/games/stand', (req: Request, res: Response) => {
     CheckAfterStand();
     res.send({
         dilerCards: gameState.dilerCards,
-        dilerPoints: gameState.dilerPoints.value,
+        dilerPoints: gameState.dilerPoints,
 
         playerCards: gameState.playerCards,
-        playerPoints: gameState.playerPoints.value,
+        playerPoints: gameState.playerPoints,
 
         gameResult: gameState.gameResult
     });
