@@ -6,7 +6,7 @@ const app = express();
 const PORT = 9000;
 
 app.use(cors({
-  origin: 'http://localhost:5173'  
+    origin: 'http://localhost:5173'
 }));
 
 
@@ -73,9 +73,15 @@ app.listen(PORT, () => {
 
 
 function createGameCards() {
-    const suits = Object.values(Suit).filter((s) => typeof (s) === "number") as Suit[];
-    console.log(suits.values);
-    const ranks = Object.values(CardValue).filter((r) => typeof (r) === "number") as CardValue[];
+    // const suits = Object.values(Suit).filter((s) => typeof (s) === "number") as Suit[];
+    // console.log(suits.values);
+    // const ranks = Object.values(CardValue).filter((r) => typeof (r) === "number") as CardValue[];
+    const suits: Suit[] = [Suit['♠'], Suit['♥'], Suit['♦'], Suit['♣']];
+    const ranks: CardValue[] = [
+        CardValue.two, CardValue.three, CardValue.four, CardValue.five, CardValue.six,
+        CardValue.seven, CardValue.eight, CardValue.nine, CardValue.ten,
+        CardValue.jack, CardValue.quin, CardValue.king, CardValue.ace
+    ];
 
     const cards: Card[] = [];
 
@@ -105,11 +111,11 @@ function addCard(someoneCards: Card[], someonePoints: { value: number }) {
     let newCard: Card = gameState.gameCards[Math.floor(Math.random() * (gameState.gameCards.length))]
     someoneCards.push(newCard);
     gameState.gameCards = gameState.gameCards.filter((card) => card != newCard);
-    countCards(someoneCards,someonePoints);
+    countCards(someoneCards, someonePoints);
 
 }
 
-function countCards(someoneCards: Card[], someonePoints:{value: number}) {
+function countCards(someoneCards: Card[], someonePoints: { value: number }) {
 
     let aceCount: number = 0;
     let points: number = 0;
@@ -118,11 +124,11 @@ function countCards(someoneCards: Card[], someonePoints:{value: number}) {
             aceCount++;
             points += 11;
         }
-        else if(card.rank == CardValue.jack || card.rank == CardValue.quin || card.rank == CardValue.king){
-            points+=10;
+        else if (card.rank == CardValue.jack || card.rank == CardValue.quin || card.rank == CardValue.king) {
+            points += 10;
         }
         else {
-            points += card.rank;
+            points += parseInt(card.rank);
 
         }
     }
