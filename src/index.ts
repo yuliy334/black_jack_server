@@ -40,13 +40,14 @@ app.get('/games/hit', (req: Request, res: Response) => {
     addCard(gameState.playerCards, gameState.playerPoints);
     Check();
     res.send({
-        dilerCards: gameState.dilerCards,
-        dilerPoints: gameState.dilerPoints,
+        // dilerCards: gameState.dilerCards,
+        // dilerPoints: gameState.dilerPoints,
 
-        playerCards: gameState.playerCards,
-        playerPoints: gameState.playerPoints,
+        // playerCards: gameState.playerCards,
+        // playerPoints: gameState.playerPoints,
 
-        gameResult: gameState.gameResult
+        // gameResult: gameState.gameResult
+        gameState:gameState
     });
 });
 app.get('/games/stand', (req: Request, res: Response) => {
@@ -107,7 +108,6 @@ function newGame() {
 }
 
 function addCard(someoneCards: Card[], someonePoints: { value: number }) {
-    console.log(`before ${someonePoints.value}`);
     let newCard: Card = gameState.gameCards[Math.floor(Math.random() * (gameState.gameCards.length))]
     someoneCards.push(newCard);
     gameState.gameCards = gameState.gameCards.filter((card) => card != newCard);
