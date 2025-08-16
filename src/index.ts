@@ -40,14 +40,13 @@ app.get('/games/hit', (req: Request, res: Response) => {
     addCard(gameState.playerCards, gameState.playerPoints);
     Check();
     res.send({
-        // dilerCards: gameState.dilerCards,
-        // dilerPoints: gameState.dilerPoints,
+        dilerCards: gameState.dilerCards,
+        dilerPoints: gameState.dilerPoints,
 
-        // playerCards: gameState.playerCards,
-        // playerPoints: gameState.playerPoints,
+        playerCards: gameState.playerCards,
+        playerPoints: gameState.playerPoints,
 
-        // gameResult: gameState.gameResult
-        gameState:gameState
+        gameResult: gameState.gameResult
     });
 });
 app.get('/games/stand', (req: Request, res: Response) => {
@@ -81,7 +80,7 @@ function createGameCards() {
     const ranks: CardValue[] = [
         CardValue.two, CardValue.three, CardValue.four, CardValue.five, CardValue.six,
         CardValue.seven, CardValue.eight, CardValue.nine, CardValue.ten,
-        CardValue.jack, CardValue.quin, CardValue.king, CardValue.ace
+        CardValue.jack, CardValue.queen, CardValue.king, CardValue.ace
     ];
 
     const cards: Card[] = [];
@@ -124,7 +123,7 @@ function countCards(someoneCards: Card[], someonePoints: { value: number }) {
             aceCount++;
             points += 11;
         }
-        else if (card.rank == CardValue.jack || card.rank == CardValue.quin || card.rank == CardValue.king) {
+        else if (card.rank == CardValue.jack || card.rank == CardValue.queen || card.rank == CardValue.king) {
             points += 10;
         }
         else {
