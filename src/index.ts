@@ -23,7 +23,7 @@ const gameState: GameState = {
 app.get('/games', (req: Request, res: Response) => {
     createGameCards();
     newGame();
-    Check();
+    firstCheck();
     res.send({
         dilerCards: gameState.dilerCards,
         dilerPoints: gameState.dilerPoints,
@@ -149,7 +149,14 @@ function Check() {
             gameState.gameResult = "push";
         }
         else {
-            gameState.gameResult = "win";
+            if (gameState.dilerPoints.value < 17) {
+                addCard(gameState.dilerCards, gameState.dilerPoints);
+                Check();
+            }
+            else {
+                gameState.gameResult = "win";
+            }
+
         }
     }
 
@@ -174,5 +181,15 @@ function CheckAfterStand() {
     }
     else {
         gameState.gameResult = "loose";
+    }
+}
+function firstCheck() {
+    if (gameState.playerPoints.value == 21) {
+        if (gameState.dilerPoints.value == 21) {
+            gameState.gameResult = "push";
+        }
+        else {
+            gameState.gameResult = "win";
+        }
     }
 }
