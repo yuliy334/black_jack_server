@@ -1,13 +1,22 @@
+import 'dotenv/config';
 import express, { Request, Response } from 'express';
 import { GameState, CardValue, Suit, Card } from './types/types';
 import cors from 'cors';
+import { registerUser, loginUser } from './auth';
+import { initializeDatabase } from './initDb';
 
 const app = express();
 const PORT = 9000;
 
-app.use(cors({
-    origin: 'http://localhost:5173'
-}));
+const corsOptions = {
+    origin: '*', // можно ограничить до своего фронта
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+    optionsSuccessStatus: 204
+};
+
+app.use(cors(corsOptions));
+app.use(express.json());
 
 
 const gameState: GameState = {
@@ -65,17 +74,65 @@ app.get('/games/stand', (req: Request, res: Response) => {
     });
 });
 
-app.listen(PORT, () => {
-    console.log(`Сервер запущен: http://localhost:${PORT}`);
+app.post('/register', async (req: Request, res: Response) => {
+    try {
+        const { username, password } = req.body;
+        
+        if (!username || !password) {
+            return res.status(400).json({ success: false, message: 'Username and password are required' });
+        }
+        
+        const result = await registerUser(username, password);
+        
+        if (result.success) {
+            res.json(result);
+        } else {
+            res.status(400).json(result);
+        }
+    } catch (error) {
+        console.error('Registration error:', error);
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
 });
+
+app.post('/login', async (req: Request, res: Response) => {
+    try {
+        const { username, password } = req.body;
+        
+        if (!username || !password) {
+            return res.status(400).json({ success: false, message: 'Username and password are required' });
+        }
+        
+        const result = await loginUser(username, password);
+        
+        if (result.success) {
+            res.json(result);
+        } else {
+            res.status(401).json(result);
+        }
+    } catch (error) {
+        console.error('Login error:', error);
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
+});
+
+// Initialize database and start server
+initializeDatabase()
+    .then(() => {
+        app.listen(PORT, () => {
+            console.log(`Server running: http://localhost:${PORT}`);
+        });
+    })
+    .catch((error) => {
+        console.error('Failed to initialize database:', error);
+        console.error('Please make sure MySQL is running and the database/user are created correctly.');
+        process.exit(1);
+    });
 
 
 
 
 function createGameCards() {
-    // const suits = Object.values(Suit).filter((s) => typeof (s) === "number") as Suit[];
-    // console.log(suits.values);
-    // const ranks = Object.values(CardValue).filter((r) => typeof (r) === "number") as CardValue[];
     const suits: Suit[] = [Suit['♠'], Suit['♥'], Suit['♦'], Suit['♣']];
     const ranks: CardValue[] = [
         CardValue.two, CardValue.three, CardValue.four, CardValue.five, CardValue.six,
