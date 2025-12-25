@@ -6,7 +6,7 @@ import { registerUser, loginUser } from './auth';
 import { initializeDatabase } from './initDb';
 
 const app = express();
-const PORT = 9000;
+const PORT = 3000;
 
 const corsOptions = {
     origin: '*', // можно ограничить до своего фронта
